@@ -1,0 +1,10 @@
+{
+  "name": "growth-curve",
+  "repo": "Wizcorp/growth-curve",
+  "description": "Calculate compound growth with inflection points.",
+  "version": "0.0.2",
+  "scripts": [
+    "index.js"
+  ],
+  "main": "index.js"
+}
