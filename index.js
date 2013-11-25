@@ -24,4 +24,17 @@ GrowthCurve.prototype.growTo = function (initial, targetLevel) {
 	return currentValue;
 };
 
+GrowthCurve.prototype.getRate = function (level) {
+	for (var i = 0; i < this.inflectionPoints.length; i += 1) {
+		var inflectionPoint = this.inflectionPoints[i];
+		var nextPoint = this.inflectionPoints[i + 1] ? parseInt(this.inflectionPoints[i + 1], 10) : Infinity;
+
+		if (level >= parseInt(inflectionPoint, 10) && level < nextPoint) {
+			return this.values[inflectionPoint];
+		}
+	}
+
+	return 1;
+};
+
 module.exports = GrowthCurve;
