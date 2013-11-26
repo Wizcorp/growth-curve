@@ -49,4 +49,11 @@ describe('Growth Curves', function () {
 			assert.equal(strongResults[i - 1], Math.round(growthCurves.strong.growTo(initialValue, i)));
 		}
 	});
+
+	it('It is possible to retrieve the rate for a given level', function () {
+		assert.equal(1, growthCurves.flat.getRate(1));
+		assert.equal(1, growthCurves.flat.getRate(823914712));
+		assert.equal(1.02, growthCurves.gentle.getRate(2));
+		assert.equal(1.07, growthCurves.strong.getRate(46));
+	});
 });
