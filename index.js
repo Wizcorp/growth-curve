@@ -1,40 +1,58 @@
 var GrowthCurve = function (growthCurve) {
-	var inflectionPoints = Object.keys(growthCurve);
-	inflectionPoints.sort(function (a, b) { return parseInt(a, 10) - parseInt(b, 10); });
+	var points = Object.keys(growthCurve);
 
-	this.inflectionPoints = inflectionPoints;
+	// convert points into numbers.
+	for (var i = 0; i < points.length; i += 1) {
+		points[i] = parseFloat(points[i], 10);
+	}
+
+	this.points = points.sort(function (a,b) { return a > b; });
+
 	this.values = growthCurve;
 };
 
 GrowthCurve.prototype.growTo = function (initial, targetLevel) {
-	var currentValue = initial;
-	var currentLevel = 1;
+	var value = initial;
+	var level = 1;
+	var points = this.points.slice().reverse();
 
-	for (var i = 0; i < this.inflectionPoints.length; i += 1) {
-		var multiplier = this.values[this.inflectionPoints[i]];
+	while (points.length) {
+		var point = points.pop();
 
-		var nextPoint = this.inflectionPoints[i + 1] ? parseInt(this.inflectionPoints[i + 1], 10) : Infinity;
+		var multiplier = this.values.hasOwnProperty(point.toString()) ? this.values[point] : 1;
+		var nextPoint = points.length ? points[points.length - 1] : Infinity;
 
-		while (currentLevel < nextPoint - 1 && currentLevel < targetLevel) {
-			currentValue = currentValue * multiplier;
-			currentLevel += 1;
+		while (level + 1 < nextPoint) {
+			if (level >= targetLevel) {
+				return value;
+			}
+
+			value = value * multiplier;
+			level += 1;
 		}
 	}
 
-	return currentValue;
+	return value;
 };
 
-GrowthCurve.prototype.getRate = function (level) {
-	for (var i = 0; i < this.inflectionPoints.length; i += 1) {
-		var inflectionPoint = this.inflectionPoints[i];
-		var nextPoint = this.inflectionPoints[i + 1] ? parseInt(this.inflectionPoints[i + 1], 10) : Infinity;
+GrowthCurve.prototype.getPoint = function (level) {
+	var point;
 
-		if (level >= parseInt(inflectionPoint, 10) && level < nextPoint) {
-			return this.values[inflectionPoint];
+	for (var i = 0; i < this.points.length; i += 1) {
+		if (level < this.points[i]) {
+			return point
 		}
+		point = this.points[i];
 	}
 
-	return 1;
+	return point;
+}
+
+GrowthCurve.prototype.getRate = function (level) {
+	var point = this.getPoint(level);
+	var out = this.values.hasOwnProperty(point) ? this.values[point] : 1;
+
+	return out;
 };
 
 module.exports = GrowthCurve;

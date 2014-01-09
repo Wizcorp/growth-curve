@@ -14,6 +14,12 @@ var growthCurveData = {
 	},
 	"gentle": {
 		"1": 1.02
+	},
+	"simple": {
+		"1": 1,
+		"10": 2,
+		"20": 3,
+		"30": 4
 	}
 };
 
@@ -31,29 +37,47 @@ for (var growthCurveId in growthCurveData) {
 describe('Growth Curves', function () {
 	it('All levels of the \"flat\" growth curve are the same', function () {
 		var initialValue = 100;
-		for (var i = 1; i < 200; i += 1) {
-			assert.equal(initialValue, growthCurves.flat.growTo(initialValue, i));
+		for (var i = 1; i <= 200; i += 1) {
+			assert.equal(growthCurves.flat.growTo(initialValue, i), initialValue);
 		}
 	});
 
 	it('The \"gentle\" growth curve matches the pre-calculated values', function () {
 		var initialValue = 1000;
-		for (var i = 1; i < gentleResults.length; i += 1) {
-			assert.equal(gentleResults[i - 1], Math.round(growthCurves.gentle.growTo(initialValue, i)));
+		for (var i = 1; i <= gentleResults.length; i += 1) {
+			assert.equal(Math.round(growthCurves.gentle.growTo(initialValue, i)), gentleResults[i - 1]);
 		}
 	});
 
 	it('The \"strong\" growth curve matches the pre-calculated values', function () {
 		var initialValue = 10000;
-		for (var i = 1; i < strongResults.length; i += 1) {
-			assert.equal(strongResults[i - 1], Math.round(growthCurves.strong.growTo(initialValue, i)));
+		for (var i = 1; i <= strongResults.length; i += 1) {
+			assert.equal(Math.round(growthCurves.strong.growTo(initialValue, i)), strongResults[i - 1]);
 		}
 	});
 
 	it('It is possible to retrieve the rate for a given level', function () {
-		assert.equal(1, growthCurves.flat.getRate(1));
-		assert.equal(1, growthCurves.flat.getRate(823914712));
-		assert.equal(1.02, growthCurves.gentle.getRate(2));
-		assert.equal(1.07, growthCurves.strong.getRate(46));
+		assert.equal(growthCurves.flat.getRate(1), 1);
+		assert.equal(growthCurves.flat.getRate(823914712), 1);
+		assert.equal(growthCurves.gentle.getRate(2), 1.02);
+		assert.equal(growthCurves.strong.getRate(46), 1.07);
+		assert.equal(growthCurves.simple.getRate(1), 1);
+		assert.equal(growthCurves.simple.getRate(2), 1);
+		assert.equal(growthCurves.simple.getRate(9), 1);
+		assert.equal(growthCurves.simple.getRate(10), 2);
+		assert.equal(growthCurves.simple.getRate(11), 2);
+		assert.equal(growthCurves.simple.getRate(19), 2);
+		assert.equal(growthCurves.simple.getRate(20), 3);
+		assert.equal(growthCurves.simple.getRate(21), 3);
+		assert.equal(growthCurves.simple.getRate(29), 3);
+		assert.equal(growthCurves.simple.getRate(30), 4);
+		assert.equal(growthCurves.simple.getRate(31), 4);
+		assert.equal(growthCurves.simple.getRate(39), 4);
+		assert.equal(growthCurves.simple.getRate(40), 4);
+		assert.equal(growthCurves.simple.getRate(41), 4);
+	});
+
+	it('It is possible to retrieve the point for a given level', function () {
+		assert.equal(growthCurves.simple.getPoint(33), 30);
 	});
 });
