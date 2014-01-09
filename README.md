@@ -26,5 +26,8 @@ they change.
 Returns the value of **initial** after it has been compounded **target** number of times with
 changes to the rate set according to the rules given in the constructor.
 
+#####getPoint( *target* );
+Returns the point that the growthCurve would use at the **target** iteration.
+
 #####getRate( *target* );
 Returns the rate that the growthCurve would use at the **target** iteration.
